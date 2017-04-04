@@ -10,11 +10,6 @@ minetest.register_on_chat_message(function(name, msg)
     local rname  = player:get_player_name()
     local colour = "#ffffff"
 
-    -- if same player, send default
-    if name == rname then
-      return false
-    end
-
     -- Check for near
     if near ~= 0 then -- and name ~= rname then
       if vector.distance(sender:getpos(), player:getpos()) <= near then
@@ -25,6 +20,16 @@ minetest.register_on_chat_message(function(name, msg)
     -- Check for mentions
     if msg:lower():find(rname:lower(), 1, true) then
       colour = "#00ff00"
+    end
+
+    -- Check for shout
+    if msg:sub(1, 1) == "!" then
+      colour = "#ff0000"
+    end
+
+    -- if same player, set to white
+    if name == rname then
+      colour = "#ffffff"
     end
 
     -- Send message
