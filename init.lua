@@ -34,3 +34,25 @@ minetest.register_on_chat_message(function(name, msg)
   -- Prevent from sending normally
   return true
 end)
+
+-- [redefine] /msg
+if minetest.chatcommands["msg"] then
+  local old_command = minetest.chatcommands["msg"].func
+  minetest.override_chatcommand("msg", {
+    func = function(name, param)
+      local sendto, message = param:match("^(%S+)%s(.+)$")
+		if not sendto then
+			return false, "Invalid usage, see /help msg."
+		end
+		if not core.get_player_by_name(sendto) then
+			return false, "The player " .. sendto
+					.. " is not online."
+		end
+		minetest.log("action", "PM from " .. name .. " to " .. sendto
+				.. ": " .. message)
+		minetest.chat_send_player(sendto, minetest.colorize('#00ff00', "PM from " .. name .. ": "
+				.. message))
+		return true, "Message sent."
+    end,
+  })
+end
