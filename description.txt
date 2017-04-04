@@ -1,0 +1,4 @@
+chat3 is a simplistic Minetest mod that makes chat on a populated server much easier to understand and keep up with.
+
+Forum: https://forum.minetest.net/viewtopic.php?f=9&t=17163
+GitHub: https://github.com/octacian/chat3
