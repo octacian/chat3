@@ -1,1 +1,31 @@
 -- chat3/init.lua
+
+local near = minetest.setting_get("chat3.highlight_near") or 12
+
+-- [event] On chat message
+minetest.register_on_chat_message(function(name, msg)
+  local sender = minetest.get_player_by_name(name)
+
+  for _, player in pairs(minetest.get_connected_players()) do
+    local rname  = player:get_player_name()
+    local colour = "#ffffff"
+
+    -- if same player, send default
+    if name == rname then
+      return false
+    end
+
+    -- Check for near
+    if near ~= 0 then -- and name ~= rname then
+      if vector.distance(sender:getpos(), player:getpos()) <= near then
+        colour = "#88ffff"
+      end
+    end
+
+    -- Send message
+    minetest.chat_send_player(rname, minetest.colorize(colour, "<"..name.."> "..msg))
+  end
+
+  -- Prevent from sending normally
+  return true
+end)
