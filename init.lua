@@ -34,6 +34,9 @@ minetest.register_on_chat_message(function(name, msg)
 
     -- Send message
     minetest.chat_send_player(rname, minetest.colorize(colour, "<"..name.."> "..msg))
+
+    -- Log message
+    minetest.log("action", "CHAT: ".."<"..name.."> "..msg)
   end
 
   -- Prevent from sending normally
