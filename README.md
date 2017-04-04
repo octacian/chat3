@@ -1,5 +1,7 @@
+![Screenshot](.gh-screenshot.png)
+
 Enhanced Chat [chat3]
-=====================
+=======================
 
 Yes, chat3 seems a whole lot like a spinoff of chat2, however, it (mostly) isn't. It isn't that much unlike chat3, except for one thing: rather than cluttering the screen with a second chat window, chat3 just uses the default Minetest chat. Then it's entirely up to the player to configure the chat placement, size, and anything else on their client.
 
