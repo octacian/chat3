@@ -1,0 +1,4 @@
+#    If this is enabled, players will have the option to hear a bell play
+#    whenever their name is mentioned in chat in addition to the message being
+#    highlighted in green.
+chat3.bell (Chatbell) bool true
