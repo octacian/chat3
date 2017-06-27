@@ -2,3 +2,17 @@
 #    whenever their name is mentioned in chat in addition to the message being
 #    highlighted in green.
 chat3.bell (Chatbell) bool true
+
+#    If this is not set to 0, players within this range of each other will see
+#    messages highlighted in blue to indicate that they are close.
+chat3.near (Near Highlight Range) float 12
+
+#    If this is true, players can cause messages to be highlighted in red for
+#    all players and the chatbell to be played (if enabled) by prefixing their
+#    message, by default, with "!" (configurable with chat3.shout_prefix).
+chat3.shout (Enable Shout Messages) bool true
+
+#    The single-character prefix to cause messages to be highlighted in red for
+#    all players and the chatbell to be played (if enabled). This setting only
+#    applies if chat3.shout is set to true.
+chat3.shout_prefix (Shout Prefix) string !

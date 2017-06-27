@@ -1,12 +1,38 @@
 -- chat3/init.lua
 
-local bell = minetest.setting_get("chat3.bell") or true
-local near = minetest.setting_get("chat3.highlight_near") or 12
+-- [function] Get setting
+local function get(key)
+	if minetest.settings then
+		return minetest.settings:get(key)
+	else
+		return minetest.setting_get(key)
+	end
+end
 
-if bell == "true" or bell == true then
-	bell = true
-else
-	bell = false
+-- [function] Get float setting
+local function get_int(key)
+	local res = get(key)
+	if res then
+		return tonumber(res)
+	end
+end
+
+-- [function] Get boolean setting
+local function get_bool(key)
+	if minetest.settings then
+		return minetest.settings:get_bool(key)
+	else
+		return minetest.setting_getbool(key)
+	end
+end
+
+local bell   = get_bool("chat3.bell")
+local shout  = get_bool("chat3.shout")
+local prefix = get("chat3.shout_prefix") or "!"
+local near   = get_int("chat3.near")     or 12
+
+if prefix:len() > 1 then
+	prefix = "!"
 end
 
 -- [function] Colorize
@@ -43,7 +69,7 @@ minetest.register_on_chat_message(function(name, msg)
 	      end
 	    end
 
-	    -- Check for mentions
+	    -- Check for mentionsfloat
 	    if msg:lower():find(rname:lower(), 1, true) then
 	      colour = "#00ff00"
 
@@ -61,7 +87,7 @@ minetest.register_on_chat_message(function(name, msg)
 	    end
 
 	    -- Check for shout
-	    if msg:sub(1, 1) == "!" then
+	    if shout and msg:sub(1, 1) == prefix then
 	      colour = "#ff0000"
 
 				-- Chat bell
