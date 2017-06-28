@@ -54,41 +54,24 @@ end)
 
 -- [event] On chat message
 minetest.register_on_chat_message(function(name, msg)
-  local sender = minetest.get_player_by_name(name)
+	local sender = minetest.get_player_by_name(name)
 
-  for _, player in pairs(minetest.get_connected_players()) do
-    local rname  = player:get_player_name()
-    local colour = "#ffffff"
+	for _, player in pairs(minetest.get_connected_players()) do
+		local rname  = player:get_player_name()
+		local colour = "#ffffff"
 
 		local vers = prot[rname]
 		if not vers or (vers and (vers >= 29 or (vers < 29 and name ~= rname))) then
 			-- Check for near
-	    if near ~= 0 then -- and name ~= rname then
-	      if vector.distance(sender:getpos(), player:getpos()) <= near then
-	        colour = "#88ffff"
-	      end
-	    end
-
-	    -- Check for mentionsfloat
-	    if msg:lower():find(rname:lower(), 1, true) then
-	      colour = "#00ff00"
-
-				-- Chat bell
-				if bell and name ~= rname then
-					local pbell = player:get_attribute("chat3:bell")
-					if pbell ~= "false" then
-						minetest.sound_play("chat3_bell", {
-							gain = 4,
-							to_player = rname,
-						})
-					end
-					minetest.log(rname..": "..dump(pbell))
+			if near ~= 0 then -- and name ~= rname then
+				if vector.distance(sender:getpos(), player:getpos()) <= near then
+					colour = "#88ffff"
 				end
-	    end
+			end
 
-	    -- Check for shout
-	    if shout and msg:sub(1, 1) == prefix then
-	      colour = "#ff0000"
+			-- Check for mentionsfloat
+			if msg:lower():find(rname:lower(), 1, true) then
+				colour = "#00ff00"
 
 				-- Chat bell
 				if bell and name ~= rname then
@@ -100,31 +83,47 @@ minetest.register_on_chat_message(function(name, msg)
 						})
 					end
 				end
-	    end
+			end
 
-	    -- if same player, set to white
-	    if name == rname then
-	      colour = "#ffffff"
-	    end
+			-- Check for shout
+			if shout and msg:sub(1, 1) == prefix then
+				colour = "#ff0000"
 
-	    -- Send message
-	    minetest.chat_send_player(rname, colorize(vers, colour, "<"..name.."> "..msg))
+				-- Chat bell
+				if bell and name ~= rname then
+					local pbell = player:get_attribute("chat3:bell")
+					if pbell ~= "false" then
+						minetest.sound_play("chat3_bell", {
+							gain = 4,
+							to_player = rname,
+						})
+					end
+				end
+			end
+
+			-- if same player, set to white
+			if name == rname then
+				colour = "#ffffff"
+			end
+
+			-- Send message
+			minetest.chat_send_player(rname, colorize(vers, colour, "<"..name.."> "..msg))
 		end
-  end
+	end
 
-  -- Log message
-  minetest.log("action", "CHAT: ".."<"..name.."> "..msg)
+	-- Log message
+	minetest.log("action", "CHAT: ".."<"..name.."> "..msg)
 
-  -- Prevent from sending normally
-  return true
+	-- Prevent from sending normally
+	return true
 end)
 
 -- [redefine] /msg
 if minetest.chatcommands["msg"] then
-  local old_command = minetest.chatcommands["msg"].func
-  minetest.override_chatcommand("msg", {
-    func = function(name, param)
-      local sendto, message = param:match("^(%S+)%s(.+)$")
+	local old_command = minetest.chatcommands["msg"].func
+	minetest.override_chatcommand("msg", {
+		func = function(name, param)
+			local sendto, message = param:match("^(%S+)%s(.+)$")
 			if not sendto then
 				return false, "Invalid usage, see /help msg."
 			end
@@ -149,8 +148,8 @@ if minetest.chatcommands["msg"] then
 			end
 
 			return true, "Message sent."
-    end,
-  })
+		end,
+	})
 end
 
 -- [chatcommand] Chatbell
