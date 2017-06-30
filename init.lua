@@ -1,5 +1,7 @@
 -- chat3/init.lua
 
+chat3 = {}
+
 -- [function] Get setting
 local function get(key)
 	if minetest.settings then
@@ -52,8 +54,12 @@ minetest.register_on_joinplayer(function(player)
 	prot[name] = info.protocol_version
 end)
 
--- [event] On chat message
-minetest.register_on_chat_message(function(name, msg)
+-- [function] Process
+function chat3.send(name, msg, prefix, source)
+	if minetest.get_modpath("ranks") and source ~= "ranks" then
+		return
+	end
+
 	local sender = minetest.get_player_by_name(name)
 
 	for _, player in pairs(minetest.get_connected_players()) do
@@ -107,7 +113,12 @@ minetest.register_on_chat_message(function(name, msg)
 			end
 
 			-- Send message
-			minetest.chat_send_player(rname, colorize(vers, colour, "<"..name.."> "..msg))
+			local send = colorize(vers, colour, "<"..name.."> "..msg)
+			if prefix then
+				send = prefix..send
+			end
+
+			minetest.chat_send_player(rname, send)
 		end
 	end
 
@@ -116,6 +127,11 @@ minetest.register_on_chat_message(function(name, msg)
 
 	-- Prevent from sending normally
 	return true
+end
+
+-- [event] On chat message
+minetest.register_on_chat_message(function(name, msg)
+	return chat3.send(name, msg)
 end)
 
 -- [redefine] /msg

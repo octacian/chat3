@@ -14,6 +14,8 @@ Messages are highlighted in a light blue to players who are within 12 blocks of 
 
 If the server is using Minetest 0.4.16, which has the ability to properly retreive the protocol version of the client without requiring a debug build, chat3 will automatically adjust its message handling to work with older clients as well. This means that clients before 0.4.16 will not see chat duplication on their side, and colour codes will not be sent to clients that do not support them.
 
+Chat3 is also compatible with some of my other chat-related mods, including [ranks](https://forum.minetest.net/viewtopic.php?f=9&t=17640).
+
 Configuration
 -------------
 
@@ -32,4 +34,4 @@ Media License
 -------------
 
 Brandon75689 - https://opengameart.org/content/point-bell (CC-BY-SA 3.0)
-  chat3_bell.ogg
+	chat3_bell.ogg
