@@ -2,6 +2,10 @@
 
 chat3 = {}
 
+chat3.storage = minetest.get_mod_storage()
+
+local modpath = minetest.get_modpath("chat3")
+
 -- [function] Get setting
 local function get(key)
 	if minetest.settings then
@@ -20,22 +24,32 @@ local function get_int(key)
 end
 
 -- [function] Get boolean setting
-local function get_bool(key)
+local function get_bool(key, default)
+	local retval
 	if minetest.settings then
-		return minetest.settings:get_bool(key)
+		retval = minetest.settings:get_bool(key)
 	else
-		return minetest.setting_getbool(key)
+		retval = minetest.setting_getbool(key)
 	end
+
+	if default and retval == nil then
+		retval = default
+	end
+
+	return retval
 end
 
 local bell   = get_bool("chat3.bell")
 local shout  = get_bool("chat3.shout")
 local prefix = get("chat3.shout_prefix") or "!"
 local near   = get_int("chat3.near")     or 12
+local ignore = get_bool("chat3.ignore", true)
 
 if prefix:len() > 1 then
 	prefix = "!"
 end
+
+if ignore then dofile(modpath.."/ignore.lua") end -- Load ignore
 
 -- [function] Colorize
 local function colorize(prot, colour, msg)
@@ -67,7 +81,8 @@ function chat3.send(name, msg, prefix, source)
 		local colour = "#ffffff"
 
 		local vers = prot[rname]
-		if not vers or (vers and (vers >= 29 or (vers < 29 and name ~= rname))) then
+		if (not vers or (vers and (vers >= 29 or (vers < 29 and name ~= rname))))
+				and (not ignore or not chat3.ignore.is(rname, name)) then
 			-- Check for near
 			if near ~= 0 then -- and name ~= rname then
 				if vector.distance(sender:getpos(), player:getpos()) <= near then
@@ -143,27 +158,56 @@ if minetest.chatcommands["msg"] then
 			if not sendto then
 				return false, "Invalid usage, see /help msg."
 			end
-			if not core.get_player_by_name(sendto) then
+			if not minetest.get_player_by_name(sendto) then
 				return false, "The player " .. sendto
 						.. " is not online."
 			end
-			minetest.log("action", "PM from " .. name .. " to " .. sendto
-					.. ": " .. message)
-			minetest.chat_send_player(sendto, minetest.colorize('#00ff00', "PM from " .. name .. ": "
-					.. message))
 
-			if bell then
-				local player = minetest.get_player_by_name(sendto)
-				local pbell = player:get_attribute("chat3:bell")
-				if pbell ~= "false" then
-					minetest.sound_play("chat3_bell", {
-						gain = 4,
-						to_player = sendto,
-					})
+			if ignore and chat3.ignore.is(sendto, name) then
+				return false, "Could not send message, you are on "..sendto
+						.."'s ignore list."
+			else
+
+				minetest.log("action", "PM from " .. name .. " to " .. sendto
+						.. ": " .. message)
+				minetest.chat_send_player(sendto, minetest.colorize('#00ff00', "PM from " .. name .. ": "
+						.. message))
+
+				if bell then
+					local player = minetest.get_player_by_name(sendto)
+					local pbell = player:get_attribute("chat3:bell")
+					if pbell ~= "false" then
+						minetest.sound_play("chat3_bell", {
+							gain = 4,
+							to_player = sendto,
+						})
+					end
+				end
+
+				if ignore and chat3.ignore.is(name, sendto) then
+					return true, "Message sent.\nWarning: "..sendto.." will not be able "
+							.." to respond to this message unless you remove them from your"
+							.." ignore list."
+				else
+					return true, "Message sent."
 				end
 			end
+		end,
+	})
+end
 
-			return true, "Message sent."
+-- [redefine] /me
+if minetest.chatcommands["me"] then
+	local old_command = minetest.chatcommands["me"]
+	minetest.override_chatcommand("me", {
+		func = function(name, param)
+			for _, player in pairs(minetest.get_connected_players()) do
+				local rname = player:get_player_name()
+
+				if not ignore or not chat3.ignore.is(rname, name) then
+					minetest.chat_send_player(rname, "* "..name.." "..param)
+				end
+			end
 		end,
 	})
 end

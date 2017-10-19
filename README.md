@@ -27,8 +27,9 @@ All of the features provided by chat3 can be configured directly from the advanc
 | chat3.bell         | bool   | true    | Enable chatbell         |
 | chat3.shout        | bool   | true    | Allow shout messages    |
 | chat3.shout_prefix | string | !       | Shout prefix            |
+| chat3.ignore       | bool   | true    | Allow ignoring players  |
 
-The chatbell can also be enabled or disabled using the `/chatbell` command per-player.
+The chatbell can also be enabled or disabled using the `/chatbell` command per-player. The ignore feature can be further configured by adding players that cannot be ignored with `ignore_override` privilege. Furthermore, the server owner (as defined by the `name` setting) cannot be ignored no matter what.
 
 Media License
 -------------
