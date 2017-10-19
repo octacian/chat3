@@ -6,6 +6,12 @@ chat3.storage = minetest.get_mod_storage()
 
 local modpath = minetest.get_modpath("chat3")
 
+local prot = {} -- Table of protocol versions - to be used later
+
+---
+--- Get Settings
+---
+
 -- [function] Get setting
 local function get(key)
 	if minetest.settings then
@@ -49,7 +55,15 @@ if prefix:len() > 1 then
 	prefix = "!"
 end
 
+---
+--- Load Features
+---
+
 if ignore then dofile(modpath.."/ignore.lua") end -- Load ignore
+
+---
+--- Helpers
+---
 
 -- [function] Colorize
 local function colorize(prot, colour, msg)
@@ -60,13 +74,9 @@ local function colorize(prot, colour, msg)
 	end
 end
 
-local prot = {}
--- [event] On join player
-minetest.register_on_joinplayer(function(player)
-	local name = player:get_player_name()
-	local info = minetest.get_player_information(name)
-	prot[name] = info.protocol_version
-end)
+---
+--- Exposed Functions (API)
+---
 
 -- [function] Process
 function chat3.send(name, msg, prefix, source)
@@ -143,6 +153,17 @@ function chat3.send(name, msg, prefix, source)
 	-- Prevent from sending normally
 	return true
 end
+
+---
+--- Events/Definitions
+---
+
+-- [event] On join player
+minetest.register_on_joinplayer(function(player)
+	local name = player:get_player_name()
+	local info = minetest.get_player_information(name)
+	prot[name] = info.protocol_version
+end)
 
 -- [event] On chat message
 minetest.register_on_chat_message(function(name, msg)
