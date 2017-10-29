@@ -10,36 +10,20 @@ local modpath = minetest.get_modpath("chat3")
 local prot = {} -- Table of protocol versions - to be used later
 
 ---
---- Get Settings
+--- Handle Settings
 ---
 
--- [function] Get setting
-local function get(key)
-	if minetest.settings then
-		return minetest.settings:get(key)
-	else
-		return minetest.setting_get(key)
-	end
-end
-chat3.settings.get = get
-
 -- [function] Get float setting
-local function get_int(key)
-	local res = get(key)
+function chat3.settings.get_int(key)
+	local res = minetest.settings:get(key)
 	if res then
 		return tonumber(res)
 	end
 end
-chat3.settings.get_int = get_int
 
 -- [function] Get boolean setting
-local function get_bool(key, default)
-	local retval
-	if minetest.settings then
-		retval = minetest.settings:get_bool(key)
-	else
-		retval = minetest.setting_getbool(key)
-	end
+function chat3.settings.get_bool(key, default)
+	local retval = minetest.settings:get_bool(key)
 
 	if default and retval == nil then
 		retval = default
@@ -47,14 +31,13 @@ local function get_bool(key, default)
 
 	return retval
 end
-chat3.settings.get_bool = get_bool
 
-local bell   = get_bool("chat3.bell")
-local shout  = get_bool("chat3.shout")
-local prefix = get("chat3.shout_prefix") or "!"
-local near   = get_int("chat3.near")     or 12
-local ignore = get_bool("chat3.ignore", true)
-local alt    = get_bool("chat3.alt_support", true)
+local bell   = chat3.settings.get_bool("chat3.bell")
+local shout  = chat3.settings.get_bool("chat3.shout")
+local prefix = minetest.settings:get("chat3.shout_prefix") or "!"
+local near   = chat3.settings.get_int("chat3.near") or 12
+local ignore = chat3.settings.get_bool("chat3.ignore", true)
+local alt    = chat3.settings.get_bool("chat3.alt_support", true)
 
 if prefix:len() > 1 then
 	prefix = "!"

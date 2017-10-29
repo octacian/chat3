@@ -6,7 +6,7 @@ Enhanced Chat [chat3]
 - Download: https://github.com/octacian/chat3/archive/master.zip
 - Forum: https://forum.minetest.net/viewtopic.php?t=17163
 
-**Notice:** The client experience with chat3 can be improved by using Minetest 0.4.16 on the server. In order to use chat3 at its full potential, you need a version of Minetest that includes [this commit](https://github.com/minetest/minetest/commit/43d1f375d18a2fbc547a9b4f23d1354d645856ca) (May 6th, 2017).
+**Notice:** chat3 requires that the server be running Minetest 0.4.16, as it is required for several features of chat3's core functionality. More specifically, you need a version of Minetest that includes [this commit](https://github.com/minetest/minetest/commit/43d1f375d18a2fbc547a9b4f23d1354d645856ca) (May 6th, 2017).
 
 Yes, chat3 seems a whole lot like a spinoff of chat2, however, it (mostly) isn't. It isn't that much unlike chat3, except for one thing: rather than cluttering the screen with a second chat window, chat3 just uses the default Minetest chat. Then it's entirely up to the player to configure the chat placement, size, and anything else on their client.
 
