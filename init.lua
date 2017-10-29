@@ -2,6 +2,7 @@
 
 chat3 = {}
 
+chat3.settings = {}
 chat3.storage = minetest.get_mod_storage()
 
 local modpath = minetest.get_modpath("chat3")
@@ -20,6 +21,7 @@ local function get(key)
 		return minetest.setting_get(key)
 	end
 end
+chat3.settings.get = get
 
 -- [function] Get float setting
 local function get_int(key)
@@ -28,6 +30,7 @@ local function get_int(key)
 		return tonumber(res)
 	end
 end
+chat3.settings.get_int = get_int
 
 -- [function] Get boolean setting
 local function get_bool(key, default)
@@ -44,12 +47,14 @@ local function get_bool(key, default)
 
 	return retval
 end
+chat3.settings.get_bool = get_bool
 
 local bell   = get_bool("chat3.bell")
 local shout  = get_bool("chat3.shout")
 local prefix = get("chat3.shout_prefix") or "!"
 local near   = get_int("chat3.near")     or 12
 local ignore = get_bool("chat3.ignore", true)
+local alt    = get_bool("chat3.alt_support", true)
 
 if prefix:len() > 1 then
 	prefix = "!"
@@ -60,6 +65,7 @@ end
 ---
 
 if ignore then dofile(modpath.."/ignore.lua") end -- Load ignore
+if alt then dofile(modpath.."/alt.lua") end -- Load alt
 
 ---
 --- Exposed Functions (API)
@@ -73,6 +79,25 @@ function chat3.colorize(name, colour, msg)
 	else
 		return msg
 	end
+end
+
+-- [function] Check if mentioned (should highlight or not)
+function chat3.is_mentioned(name, msg)
+	name, msg = name:lower(), msg:lower()
+
+	-- Direct mentions
+	local direct_mention = msg:find(name, 1, true)
+
+	-- Alt mentions
+	local alt_mention
+	if alt then
+		local list = chat3.alt.get(name)
+		for alt, i in pairs(list) do
+			alt_mention = msg:find(alt, 1, true) or alt_mention
+		end
+	end
+
+	return direct_mention or alt_mention
 end
 
 -- [function] Process
@@ -97,8 +122,8 @@ function chat3.send(name, msg, prefix, source)
 				end
 			end
 
-			-- Check for mentionsfloat
-			if msg:lower():find(rname:lower(), 1, true) then
+			-- Check for mentions
+			if chat3.is_mentioned(rname, msg) then
 				colour = "#00ff00"
 
 				-- Chat bell

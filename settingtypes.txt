@@ -24,3 +24,13 @@ chat3.shout_prefix (Shout Prefix) string !
 #    automatically remove them should they already exist. The server owner (as
 #    defined by the `name` setting) cannot be ignored no matter what.
 chat3.ignore (Enable Ignore Feature) bool true
+
+#    When enabled, players can add a limitted number of alternate usernames
+#    which chat3 will check incoming messages for in order to expand
+#    highlighting. The max number of allowed alternate usernames can be
+#    configured with chat3.alt_max (defaults to 3).
+chat3.alt_support (Allow players to add alts) bool true
+
+#    If chat3.alt_support is enabled, this will control the maximum number of
+#    alternate usernames that each player is allowed to configure.
+chat3.alt_max (Configure maximum alts) int 3 1 1000

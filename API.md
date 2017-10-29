@@ -97,3 +97,36 @@ Ignore API
 * if none, in a format suitable for use with `table.concat` (e.g. `{name1, name2, ...}`).
 * `name`: Name of player whose ignore list should be listed
 * `subtable`: Table to return (`ignoring` or `ignored_by`)
+
+Alternate Username API
+----------------------
+
+`chat3.alt.get(name)`
+
+* Returns table of alternate usernames (e.g. `{name1 = true, name2 = true, ...}`)
+* `name`: Player username
+
+`chat3.alt.set(name, list)`
+
+* Set a player's alternate username list
+* `name`: Player username
+* `list`: Table of alternate usernames (e.g. `{name1 = true, name2 = true, ...}`)
+
+`chat3.alt.add(name, alt)`
+
+* Add an alternate username (returns `nil` if max has been reached or if the
+	alternate username already exists)
+* `name`: Base player username
+* `alt`: New alternate username
+
+`chat3.alt.remove(name, alt)`
+
+* Remove an alternate username (returns `nil` if the username already does not
+	exist)
+* `name`: Base player username
+* `alt`: Alternate username to remove
+
+`chat3.alt.list(name)`
+
+* Returns a table with a list of alternate usernames (suitable for `table.concat`)
+* `name`: Player username
