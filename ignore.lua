@@ -67,7 +67,8 @@ function chat3.ignore.clear(name)
 		local tlist = chat3.ignore.get(t)
 		tlist.ignored_by[name] = nil
 		chat3.ignore.set(t, tlist)
-		minetest.chat_send_player(t, name.." is no longer ignoring you.")
+		minetest.chat_send_player(t, chat3.colorize(t, "#00ff00", name..
+				" is no longer ignoring you."))
 		list.ignoring[t] = nil
 	end
 
@@ -91,7 +92,6 @@ function chat3.ignore.is(name, check)
 	if name == check then
 		return false
 	else
-		minetest.log("chat3.ignore.is: "..name..", "..check)
 		local list = chat3.ignore.get(check).ignored_by
 		return list[name] and chat3.ignore.can(name, check)
 	end
@@ -107,7 +107,8 @@ function chat3.ignore.add(name, ignore)
 
 			-- Notify ignored player
 			if minetest.get_player_by_name(ignore) then
-				minetest.chat_send_player(ignore, name.." is now ignoring you.")
+				minetest.chat_send_player(ignore, chat3.colorize(ignore, "red", name..
+						" is now ignoring you."))
 			end
 
 			return true, "Added "..ignore.." to your ignore list."
@@ -124,7 +125,8 @@ function chat3.ignore.remove(name, unignore)
 
 		-- Notify unignored player
 		if minetest.get_player_by_name(unignore) then
-			minetest.chat_send_player(unignore, name.." is no longer ignoring you.")
+			minetest.chat_send_player(unignore, chat3.colorize(unignore, "#00ff00",
+					name.." is no longer ignoring you."))
 		end
 
 		return true, "Removed "..unignore.." from your ignore list."
@@ -172,7 +174,8 @@ minetest.register_on_joinplayer(function(player)
 		end
 
 		minetest.chat_send_player(name, string.format(
-				"You are being ignored by %i %s: %s.", #list, p, table.concat(list, ", ")))
+				"You are being ignored by %i %s: %s.", #list, p,
+				table.concat(list, ", ")))
 	end
 end)
 

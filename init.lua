@@ -62,21 +62,18 @@ end
 if ignore then dofile(modpath.."/ignore.lua") end -- Load ignore
 
 ---
---- Helpers
+--- Exposed Functions (API)
 ---
 
 -- [function] Colorize
-local function colorize(prot, colour, msg)
-	if prot and prot >= 27 then
+function chat3.colorize(name, colour, msg)
+	local vers = prot[name]
+	if vers and vers >= 27 then
 		return minetest.colorize(colour, msg)
 	else
 		return msg
 	end
 end
-
----
---- Exposed Functions (API)
----
 
 -- [function] Process
 function chat3.send(name, msg, prefix, source)
@@ -138,7 +135,7 @@ function chat3.send(name, msg, prefix, source)
 			end
 
 			-- Send message
-			local send = colorize(vers, colour, "<"..name.."> "..msg)
+			local send = chat3.colorize(rname, colour, "<"..name.."> "..msg)
 			if prefix then
 				send = prefix..send
 			end
@@ -185,14 +182,14 @@ if minetest.chatcommands["msg"] then
 			end
 
 			if ignore and chat3.ignore.is(sendto, name) then
-				return false, "Could not send message, you are on "..sendto
-						.."'s ignore list."
+				return false, chat3.colorize(name, "red",
+						"Could not send message, you are on "..sendto.."'s ignore list.")
 			else
 
 				minetest.log("action", "PM from " .. name .. " to " .. sendto
 						.. ": " .. message)
-				minetest.chat_send_player(sendto, minetest.colorize('#00ff00', "PM from " .. name .. ": "
-						.. message))
+				minetest.chat_send_player(sendto, chat3.colorize(sendto, '#00ff00',
+						"PM from " .. name .. ": ".. message))
 
 				if bell then
 					local player = minetest.get_player_by_name(sendto)
@@ -206,9 +203,9 @@ if minetest.chatcommands["msg"] then
 				end
 
 				if ignore and chat3.ignore.is(name, sendto) then
-					return true, "Message sent.\nWarning: "..sendto.." will not be able "
-							.." to respond to this message unless you remove them from your"
-							.." ignore list."
+					return true, "Message sent.\n"..chat3.colorize(name, "red",
+							"Warning: "..sendto.." will not be able to respond to this"
+							.." message unless you remove them from your ignore list.")
 				else
 					return true, "Message sent."
 				end

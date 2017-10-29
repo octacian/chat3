@@ -4,6 +4,14 @@ Chat3 API
 Main API
 --------
 
+`chat3.colorize(name, color, msg)`
+
+* Checks protocol of `name` and if recent enough returns the colourized `msg`
+* This does not send the message to the player, but just returns the message.
+* `name`: Name of player to whom the colorized message is to be sent
+* `color`: Hex-code or color name (string)
+* `msg`: Message to colorize
+
 `chat3.send(name, msg, prefix, source)`
 
 * Simulate a message being sent to all players
