@@ -85,8 +85,9 @@ end
 
 -- [function] Process
 function chat3.send(name, msg, prefix, source)
-	if minetest.get_modpath("ranks") and source ~= "ranks" then
-		return
+	if not  minetest.check_player_privs(name, "shout")
+		or minetest.get_modpath("ranks") and source ~= "ranks" then
+			return
 	end
 
 	local sender = minetest.get_player_by_name(name)
