@@ -51,12 +51,36 @@ if ignore then dofile(modpath.."/ignore.lua") end -- Load ignore
 if alt then dofile(modpath.."/alt.lua") end -- Load alt
 
 ---
+--- Helpers
+---
+
+local function cache_protocal_version(name)
+	local info = minetest.get_player_information(name)
+	-- if info is not nil, cache the player's protocol version
+	if info ~= nil then
+		prot[name] = info.protocol_version
+	-- else, if info is nil, the player doesn't exist yet for some reason and
+	-- caching will occur the first time the information is requested.
+	end
+end
+
+local function get_protocal_version(name)
+	-- if version is cached, return it
+	if prot[name] then
+		return prot[name]
+	end
+
+	-- otherwise, retrive and cache it
+	cache_protocal_version(name)
+end
+
+---
 --- Exposed Functions (API)
 ---
 
 -- [function] Colorize
 function chat3.colorize(name, colour, msg)
-	local vers = prot[name]
+	local vers = get_protocal_version(name)
 	if vers and vers >= 27 then
 		return minetest.colorize(colour, msg)
 	else
@@ -167,8 +191,7 @@ end
 -- [event] On join player
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
-	local info = minetest.get_player_information(name)
-	prot[name] = info.protocol_version
+	cache_protocal_version(name)
 end)
 
 -- [event] On chat message
